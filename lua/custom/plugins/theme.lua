@@ -1,0 +1,1 @@
+/home/amine/.config/dotfiles/themes/current/nvim.lua
