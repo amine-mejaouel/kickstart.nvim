@@ -1013,5 +1013,18 @@ require('lazy').setup({
   },
 })
 
+local function set_indent(filetype, shiftwidth, expandtab)
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = filetype,
+    callback = function()
+      vim.opt_local.shiftwidth = shiftwidth
+      vim.opt_local.tabstop = shiftwidth
+      vim.opt_local.expandtab = expandtab
+    end,
+  })
+end
+
+set_indent('sh', 2, true)
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
