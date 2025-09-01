@@ -761,6 +761,7 @@ require('lazy').setup({
       },
     },
     opts = {
+      ensure_installed = { 'prettier' },
       notify_on_error = false,
       format_on_save = function(bufnr)
         -- Disable "format_on_save lsp_fallback" for languages that don't
@@ -778,6 +779,8 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        jsonc = { 'prettier', 'json-format' },
+        css = { 'prettier' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
