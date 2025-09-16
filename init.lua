@@ -1031,6 +1031,7 @@ local function set_indent(filetype, shiftwidth, expandtab)
 end
 
 set_indent('sh', 2, true)
+set_indent('ps1', 2, true)
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
