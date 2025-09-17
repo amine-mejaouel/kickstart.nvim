@@ -728,6 +728,10 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'fsautocomplete',
+        'lua-language-server',
+        'prettier',
+        'shfmt',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -1018,6 +1022,11 @@ require('lazy').setup({
     },
   },
 })
+
+-- https://github.com/JohnnyMorganz/StyLua/?tab=readme-ov-file#options
+require('conform').formatters.stylua = {
+  append_args = { '--indent-type', 'Spaces' },
+}
 
 local function set_indent(filetype, shiftwidth, expandtab)
   vim.api.nvim_create_autocmd('FileType', {
