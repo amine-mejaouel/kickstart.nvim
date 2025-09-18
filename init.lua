@@ -1025,7 +1025,7 @@ require('lazy').setup({
 
 -- https://github.com/JohnnyMorganz/StyLua/?tab=readme-ov-file#options
 require('conform').formatters.stylua = {
-  append_args = { '--indent-type', 'Spaces' },
+  append_args = { '--indent-type', 'Spaces', '--indent-width', '2' },
 }
 
 local function set_indent(filetype, shiftwidth, expandtab)
