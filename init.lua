@@ -730,6 +730,7 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
         'fsautocomplete',
         'lua-language-server',
+        'bash-language-server',
         'prettier',
         'shfmt',
       })
