@@ -252,6 +252,17 @@ require('lazy').setup({
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
 
   {
+    -- This is for working with C#
+    -- In order for this to work, roslyn should be installed manually through :Mason menu
+    'seblyng/roslyn.nvim',
+    ---@module 'roslyn.config'
+    ---@type RoslynNvimConfig
+    opts = {
+      -- your configuration comes here; leave empty for default settings
+    },
+  },
+
+  {
     'norcalli/nvim-colorizer.lua',
     config = function()
       require('colorizer').setup {
@@ -1031,6 +1042,16 @@ require('lazy').setup({
     },
   },
 })
+
+require('mason').setup {
+  registries = {
+    -- Custom Mason registries needed for https://github.com/seblyng/roslyn.nvim
+    -- Once https://github.com/mason-org/mason-registry/pull/6330 is merged, this will no longer be needed
+    -- This allows to install roslyn through :Mason.
+    'github:mason-org/mason-registry',
+    'github:Crashdummyy/mason-registry',
+  },
+}
 
 -- https://github.com/JohnnyMorganz/StyLua/?tab=readme-ov-file#options
 require('conform').formatters.stylua = {
