@@ -12,6 +12,13 @@ return { -- Autoformat
       desc = '[F]ormat buffer',
     },
   },
+  config = function(_, opts)
+    require('conform').setup(opts)
+    -- https://github.com/JohnnyMorganz/StyLua/?tab=readme-ov-file#options
+    require('conform').formatters.stylua = {
+      append_args = { '--indent-type', 'Spaces', '--indent-width', '2' },
+    }
+  end,
   opts = {
     ensure_installed = { 'prettier' },
     notify_on_error = false,
