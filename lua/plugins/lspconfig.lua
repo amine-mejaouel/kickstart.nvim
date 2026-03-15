@@ -243,7 +243,6 @@ return {
       'fsautocomplete',
       'lua-language-server',
       'bash-language-server',
-      'rust-analyzer',
       'prettier',
       'shfmt',
     })
