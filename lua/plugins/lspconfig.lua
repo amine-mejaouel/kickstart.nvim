@@ -7,15 +7,7 @@ return {
     -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
     {
       'mason-org/mason.nvim',
-      opts = {
-        registries = {
-          -- Custom Mason registries needed for https://github.com/seblyng/roslyn.nvim
-          -- Once https://github.com/mason-org/mason-registry/pull/6330 is merged, this will no longer be needed
-          -- This allows to install roslyn through :Mason.
-          'github:mason-org/mason-registry',
-          'github:Crashdummyy/mason-registry',
-        },
-      },
+      opts = {},
     },
     'mason-org/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
