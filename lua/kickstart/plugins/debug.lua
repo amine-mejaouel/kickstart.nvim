@@ -95,6 +95,7 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
+        'coreclr', -- .NET debugger (installs netcoredbg via Mason)
       },
     }
 
@@ -137,12 +138,48 @@ return {
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
     -- Install golang specific config
-    require('dap-go').setup {
-      delve = {
-        -- On Windows delve must be run attached or it crashes.
-        -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
-        detached = vim.fn.has 'win32' == 0,
+    -- require('dap-go').setup {
+    --   delve = {
+    --     -- On Windows delve must be run attached or it crashes.
+    --     -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
+    --     detached = vim.fn.has 'win32' == 0,
+    --   },
+    -- }
+
+    -- .NET / C# debug configurations
+    dap.configurations.cs = {
+      {
+        type = 'coreclr',
+        name = 'Launch - Build and Debug',
+        request = 'launch',
+        program = function()
+          local cwd = vim.fn.getcwd()
+          local project_name = vim.fn.fnamemodify(cwd, ':t')
+          os.execute 'dotnet build'
+          local glob = vim.fn.glob(cwd .. '/bin/Debug/*/' .. project_name .. '.dll', false, true)
+          if #glob > 0 then
+            return glob[1]
+          end
+          return vim.fn.input('Path to dll: ', cwd .. '/bin/Debug/', 'file')
+        end,
+      },
+      {
+        type = 'coreclr',
+        name = 'Launch - Select DLL',
+        request = 'launch',
+        program = function()
+          return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+        end,
+      },
+      {
+        type = 'coreclr',
+        name = 'Attach to Process',
+        request = 'attach',
+        processId = require('dap.utils').pick_process,
       },
     }
+
+    -- F# shares the same coreclr debugger
+    dap.configurations.fsharp = dap.configurations.cs
   end,
 }
