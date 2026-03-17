@@ -34,25 +34,32 @@ return {
       desc = 'Debug: Start/Continue',
     },
     {
-      '<F1>',
+      '<Right>',
       function()
         require('dap').step_into()
       end,
       desc = 'Debug: Step Into',
     },
     {
-      '<F2>',
+      '<Left>',
+      function()
+        require('dap').step_out()
+      end,
+      desc = 'Debug: Step Out',
+    },
+    {
+      '<Down>',
       function()
         require('dap').step_over()
       end,
       desc = 'Debug: Step Over',
     },
     {
-      '<F3>',
+      '<Up>',
       function()
-        require('dap').step_out()
+        require('dap').restart_frame()
       end,
-      desc = 'Debug: Step Out',
+      desc = 'Debug: Restart Frame',
     },
     {
       '<leader>b',
@@ -146,6 +153,26 @@ return {
     --   },
     -- }
 
+    --- Find all DLLs and let the user pick one via vim.ui.select
+    ---@param co thread coroutine to resume after selection
+    local function pick_dll(co)
+      local cwd = vim.fn.getcwd()
+      local dlls = vim.fn.glob(cwd .. '**/*.dll', false, true)
+      if #dlls == 0 then
+        vim.notify('No DLLs found', vim.log.levels.WARN)
+        coroutine.resume(co, nil)
+        return
+      end
+      vim.ui.select(dlls, {
+        prompt = 'Select DLL to debug:',
+        format_item = function(path)
+          return vim.fn.fnamemodify(path, ':~:.')
+        end,
+      }, function(choice)
+        coroutine.resume(co, choice)
+      end)
+    end
+
     -- .NET / C# debug configurations
     dap.configurations.cs = {
       {
@@ -153,14 +180,10 @@ return {
         name = 'Launch - Build and Debug',
         request = 'launch',
         program = function()
-          local cwd = vim.fn.getcwd()
-          local project_name = vim.fn.fnamemodify(cwd, ':t')
           os.execute 'dotnet build'
-          local glob = vim.fn.glob(cwd .. '/bin/Debug/*/' .. project_name .. '.dll', false, true)
-          if #glob > 0 then
-            return glob[1]
-          end
-          return vim.fn.input('Path to dll: ', cwd .. '/bin/Debug/', 'file')
+          return coroutine.create(function(co)
+            pick_dll(co)
+          end)
         end,
       },
       {
@@ -168,7 +191,9 @@ return {
         name = 'Launch - Select DLL',
         request = 'launch',
         program = function()
-          return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+          return coroutine.create(function(co)
+            pick_dll(co)
+          end)
         end,
       },
       {
