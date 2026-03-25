@@ -5,3 +5,5 @@ nvim
 
 spell/
 lua/custom/plugins/theme.lua
+
+.claude/settings.local.json
