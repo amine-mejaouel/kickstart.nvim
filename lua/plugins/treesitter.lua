@@ -3,13 +3,23 @@ return { -- Highlight, edit, and navigate code
   branch = 'main',
   lazy = false, -- the main branch does not support lazy-loading
   build = ':TSUpdate',
-  dependencies = { 'mason-org/mason.nvim' }, -- mason's setup puts tree-sitter-cli on Neovim's PATH first
+  dependencies = { 'mason-org/mason.nvim' }, -- mason's setup prepends mason/bin (the tree-sitter shim) to $PATH
   -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
   config = function()
     local ts = require 'nvim-treesitter'
 
+    -- Building a parser always shells out to `tree-sitter build`, and the CLI
+    -- comes from mason-tool-installer, which only runs later on the first
+    -- startup after a fresh clone. Skipping keeps that startup quiet; the
+    -- parsers install on the next launch.
+    local function have_cli()
+      return vim.fn.executable 'tree-sitter' == 1
+    end
+
     -- Installed eagerly (async; no-op when already up to date)
-    ts.install { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'gitcommit' }
+    if have_cli() then
+      ts.install { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'gitcommit' }
+    end
 
     -- The main branch has no `highlight`/`indent` opts; both are enabled
     -- per-buffer via `vim.treesitter.start()` and 'indentexpr'.
@@ -41,7 +51,7 @@ return { -- Highlight, edit, and navigate code
 
         if vim.treesitter.language.add(lang) then
           start()
-        elseif vim.list_contains(ts.get_available(), lang) then
+        elseif have_cli() and vim.list_contains(ts.get_available(), lang) then
           -- Replaces the old `auto_install = true`. A failed install just leaves
           -- `start` a no-op; `install` reports that as a return value, not an error.
           ts.install(lang):await(vim.schedule_wrap(start))
