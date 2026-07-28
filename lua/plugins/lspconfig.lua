@@ -248,6 +248,7 @@ return {
       'bash-language-server',
       'prettier',
       'shfmt',
+      'tree-sitter-cli', -- Required by nvim-treesitter (main branch) to build parsers
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
