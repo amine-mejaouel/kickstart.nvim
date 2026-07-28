@@ -27,7 +27,14 @@ return { -- Highlight, edit, and navigate code
             return
           end
           vim.treesitter.start(args.buf, lang)
-          if lang ~= 'ruby' then -- ruby indents better with vim's regex engine
+          -- Ruby indents better with vim's regex engine, and only about half the
+          -- parsers ship an `indents` query -- without one the treesitter
+          -- indentexpr returns 0 for every line and would clobber vim's built-in
+          -- indent (vim, vimdoc, gitcommit, diff, luadoc, markdown_inline).
+          -- NOTE: the old config also set `additional_vim_regex_highlighting = { 'ruby' }`,
+          -- which ruby's own indentexpr needs (it calls synID()). Dropped on
+          -- purpose: there is no ruby in this setup.
+          if lang ~= 'ruby' and vim.treesitter.query.get(lang, 'indents') then
             vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
           end
         end
