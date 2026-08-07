@@ -18,7 +18,7 @@ return { -- Highlight, edit, and navigate code
 
     -- Installed eagerly (async; no-op when already up to date)
     if have_cli() then
-      ts.install { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'gitcommit' }
+      ts.install { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'gitcommit', 'yaml' }
     end
 
     -- The main branch has no `highlight`/`indent` opts; both are enabled
